@@ -6,6 +6,7 @@ std::string Calendar::text = "";
 bool Calendar::save = false;
 bool Calendar::deleteAll = false;
 bool Calendar::takeScreenshot = false;
+int Calendar::moveMonth = 0;
 
 Calendar::Calendar(Graphics *graphics, std::pair<int, int> dimensions, HWND window)
 {
@@ -13,17 +14,16 @@ Calendar::Calendar(Graphics *graphics, std::pair<int, int> dimensions, HWND wind
 	this->dimensions = dimensions;
 	this->window = window;
 
-	textColor = D2D1::ColorF(0.6f, 0.6f, 0.6f);
+	textColor = D2D1::ColorF(0.7f, 0.7f, 0.7f);
 	lineColor = D2D1::ColorF(0.0f, 0.7f, 0.0f);
 	focusColor = D2D1::ColorF(0.2f, 0.2f, 0.2f);
-	dateColor = D2D1::ColorF(0.8f, 0.8f, 0.8f);
+	dateColor = D2D1::ColorF(0.9f, 0.9f, 0.9f);
 	dayOfWeekColor = D2D1::ColorF(1.0f, 0.7f, 0.0f);
 
 	GetModuleFileName(NULL, path, sizeof(path));
 	basePath = path;
 	basePath = basePath.substr(0, basePath.size() - 12);
-	
-	contentFile = basePath + "content.txt";
+
 	monthFile = basePath + "month.txt";
 	screenshotFile = basePath + "picture.png";
 
@@ -45,25 +45,33 @@ Calendar::Calendar(Graphics *graphics, std::pair<int, int> dimensions, HWND wind
 	daysOfWeek[5]->SetText("FRI");
 	daysOfWeek[6]->SetText("SAT");
 
+	TilesInit();
+	LoadFromFile(currentMonth);
+}
+
+Calendar::~Calendar()
+{
+}
+
+void Calendar::TilesInit()
+{
 	for (int i = 0; i < ARRAYSIZE(tiles); i++) {
 		for (int j = 0; j < ARRAYSIZE(tiles[0]); j++) {
 			int space = dimensions.second / 20;
 			int w = dimensions.first / 7;
 			int h = (dimensions.second - space) / 5;
 
-			tiles[i][j] = new Tile({j*w, (i*h)+space}, {w, h+space});
+			tiles[i][j] = new Tile({ j*w, (i*h) + space }, { w, h + space });
 
-			if (i != 0 || j > offsetPerMonth[currentMonth - 1]-1) {
+			if (i != 0 || j > offsetPerMonth[currentMonth - 1] - 1) {
 				int day = i * 7 + (j + 1) - offsetPerMonth[currentMonth - 1];
 				tiles[i][j]->SetDay(day > daysPerMonth[currentMonth - 1] ? 0 : day);
+				tiles[i][j]->SetText("");
+
+				if (day == currentDay) focusCoor = { j*w, i*h + space };
 			}
 		}
 	}
-	Load();
-}
-
-Calendar::~Calendar()
-{
 }
 
 void Calendar::Update()
@@ -107,8 +115,12 @@ void Calendar::Update()
 		}
 	}
 
+	int mW = dimensions.first * 7;
+	int mH = dimensions.second * 7;
+	graphics->WriteText(std::to_string(currentMonth), dimensions.first/2 - mW/50, dimensions.second/2 - mH/15, mW, mH, D2D1::ColorF(1.0f, 1.0f, 1.0f, 0.1f));
+
 	if (save) {
-		Save();
+		SaveToFile(currentMonth);
 		MessageBox(NULL, "SAVED", "", NULL);
 		save = false;
 	}
@@ -125,11 +137,24 @@ void Calendar::Update()
 		MessageBox(NULL, "WALLPAPER UPDATED", "", NULL);
 		takeScreenshot = false;
 	}
+
+	if (moveMonth == -1) {
+		currentMonth -= (currentMonth==1) ? 0 : 1;
+		TilesInit();
+		LoadFromFile(currentMonth);
+		moveMonth = 0;
+	}
+	else if (moveMonth == 1) {
+		currentMonth += (currentMonth == 12) ? 0 : 1;
+		TilesInit();
+		LoadFromFile(currentMonth);
+		moveMonth = 0;
+	}
 }
 
-void Calendar::Save()
+void Calendar::SaveToFile(int month)
 {
-	writeFile.open(contentFile);
+	writeFile.open(basePath + months[currentMonth - 1] + ".txt");
 	for (int i = 0; i < ARRAYSIZE(tiles); i++) {
 		for (int j = 0; j < ARRAYSIZE(tiles[0]); j++) {
 			writeFile << tiles[i][j]->GetDay() << "|" << tiles[i][j]->GetText() << "\n";
@@ -142,15 +167,10 @@ void Calendar::Save()
 	writeFile.close();
 }
 
-void Calendar::Load()
+void Calendar::LoadFromFile(int month)
 {
-	readFile.open(monthFile);
-	int month;
-	readFile >> month;
-	readFile.close();
-	
-	if (month == currentMonth) {
-		readFile.open(contentFile);
+	readFile.open(basePath + months[currentMonth - 1] + ".txt");
+	if (readFile.is_open()) {
 		std::string line;
 		for (int i = 0; i < ARRAYSIZE(tiles); i++) {
 			for (int j = 0; j < ARRAYSIZE(tiles[0]); j++) {

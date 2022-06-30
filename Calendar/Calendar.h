@@ -11,9 +11,11 @@ public:
 	Calendar(Graphics *graphics, std::pair<int, int> dimensions, HWND window);
 	~Calendar();
 
+	void TilesInit();
+
 	void Update();
-	void Save();
-	void Load();
+	void SaveToFile(int month);
+	void LoadFromFile(int month);
 	void DeleteAll();
 
 	void TakeScreenshot();
@@ -31,6 +33,7 @@ public:
 	static void SetSave(bool state) { save = state; }
 	static void SetDeleteAll(bool state) { deleteAll = state; }
 	static void SetTakeScreenshot(bool state) { takeScreenshot = state; }
+	static void SetMoveMonth(int num) { moveMonth = num; }
 
 private:
 	Graphics *graphics;
@@ -48,6 +51,7 @@ private:
 
 	int daysPerMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	int offsetPerMonth[12] = { 0, 0, 0, 0, 0, 3, 5, 1, 4, 6, 2, 4 };
+	std::string months[12] = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" };
 
 	Tile *tiles[5][7];
 	Tile *daysOfWeek[7];
@@ -57,6 +61,8 @@ private:
 
 	static std::pair<int, int> focus;
 	std::pair<int, int> focusPrev;
+
+	static int moveMonth;
 
 	static bool deleteAll;
 
@@ -68,7 +74,6 @@ private:
 
 	char path[256];
 	std::string basePath;
-	std::string contentFile;
 	std::string monthFile;
 	std::string screenshotFile;
 };

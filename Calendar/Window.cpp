@@ -18,6 +18,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		if (wp == VK_ESCAPE) Calendar::SetFocus(-1, -1);
 		else if (wp == VK_TAB) Calendar::SetSave(true);
 		else if (wp == VK_BACK) Calendar::SetText("<-");
+		else if ((char)wp == '<') Calendar::SetMoveMonth(-1);
+		else if ((char)wp == '>') Calendar::SetMoveMonth(1);
 		else if ((char)wp == '}') Calendar::SetTakeScreenshot(true);
 		else if ((char)wp == '`') Calendar::SetText("###");
 		else if ((char)wp == '\\') Calendar::SetDeleteAll(true);
