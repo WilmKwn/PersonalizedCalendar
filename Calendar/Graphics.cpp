@@ -51,7 +51,13 @@ void Graphics::DrawLine(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COL
 	renderTarget->DrawLine(D2D1::Point2F((float)p1.first, (float)p1.second), D2D1::Point2F((float)p2.first, (float)p2.second), brush);
 }
 
-void Graphics::DrawRect(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COLOR_F color)
+void Graphics::DrawOutlineRect(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COLOR_F color)
+{
+	renderTarget->CreateSolidColorBrush(color, &brush);
+	renderTarget->DrawRectangle(D2D1::RectF(p1.first, p1.second, p2.first, p2.second), brush);
+}
+
+void Graphics::DrawFilledRect(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COLOR_F color)
 {
 	renderTarget->CreateSolidColorBrush(color, &brush);
 	renderTarget->FillRectangle(D2D1::RectF(p1.first, p1.second, p2.first, p2.second), brush);

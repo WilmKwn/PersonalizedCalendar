@@ -13,12 +13,15 @@ public:
 
 	std::pair<int,int> GetPos();
 	std::pair<int,int> GetSize();
-	std::string GetText();
 	
-	int GetDay();
 	void SetDay(int day);
+	int GetDay();
 
 	void SetText(std::string text);
+	std::string GetText();
+
+	void SetToday(bool state);
+	bool GetToday();
 
 private:
 	int x, y;
@@ -27,4 +30,6 @@ private:
 	int day;
 
 	std::string text;
+
+	bool today;
 };

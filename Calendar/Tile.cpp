@@ -10,6 +10,8 @@ Tile::Tile(std::pair<int, int> pos, std::pair<int, int> size)
 	day = 0;
 
 	text = "";
+
+	today = false;
 }
 
 Tile::~Tile()
@@ -44,4 +46,14 @@ void Tile::SetDay(int day)
 void Tile::SetText(std::string text)
 {
 	this->text = text;
+}
+
+void Tile::SetToday(bool state)
+{
+	today = state;
+}
+
+bool Tile::GetToday()
+{
+	return today;
 }

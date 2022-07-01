@@ -29,7 +29,7 @@ Calendar::Calendar(Graphics *graphics, std::pair<int, int> dimensions, HWND wind
 
 	SYSTEMTIME date = { 0 };
 	GetLocalTime(&date);
-	currentMonth = date.wMonth;
+	currentMonth = originalMonth = date.wMonth;
 	currentDay = date.wDay;
 
 	for (int i = 0; i < ARRAYSIZE(daysOfWeek); i++) {
@@ -68,7 +68,11 @@ void Calendar::TilesInit()
 				tiles[i][j]->SetDay(day > daysPerMonth[currentMonth - 1] ? 0 : day);
 				tiles[i][j]->SetText("");
 
-				if (day == currentDay) focusCoor = { j*w, i*h + space };
+				if (day == currentDay) {
+					focusCoor = { j*w, i*h + space };
+					todayIndex = { j, i };
+					tiles[i][j]->SetToday(true);
+				}
 			}
 		}
 	}
@@ -90,7 +94,7 @@ void Calendar::Update()
 
 	if (focusCoor.first >= 0 && focusCoor.second >= 0) {
 		focus = { focusCoor.first / w, (focusCoor.second - space) / h };
-		graphics->DrawRect({ focus.first*w, focus.second*h + space }, { (focus.first + 1)*w, (focus.second + 1)*h + space }, focusColor);
+		graphics->DrawFilledRect({ focus.first*w, focus.second*h + space }, { (focus.first + 1)*w, (focus.second + 1)*h + space }, focusColor);
 
 		if (focus.first != focusPrev.first || focus.second != focusPrev.second) text = tiles[focus.second][focus.first]->GetText();
 		tiles[focus.second][focus.first]->SetText(text);
@@ -115,6 +119,11 @@ void Calendar::Update()
 		}
 	}
 
+
+	if (currentMonth == originalMonth) {
+		graphics->DrawOutlineRect({todayIndex.first*w, todayIndex.second*h + space}, {(todayIndex.first+1)*w, (todayIndex.second+1)*h + space}, D2D1::ColorF(0.0f, 0.0f, 1.0f));
+	}
+
 	int mW = dimensions.first * 7;
 	int mH = dimensions.second * 7;
 	graphics->WriteText(std::to_string(currentMonth), dimensions.first/2 - mW/50, dimensions.second/2 - mH/15, mW, mH, D2D1::ColorF(1.0f, 1.0f, 1.0f, 0.1f));
@@ -124,13 +133,11 @@ void Calendar::Update()
 		MessageBox(NULL, "SAVED", "", NULL);
 		save = false;
 	}
-
 	if (deleteAll) {
 		DeleteAll();
 		MessageBox(NULL, "CLEARED", "", NULL);
 		deleteAll = false;
 	}
-	
 	if (takeScreenshot) {
 		TakeScreenshot();
 		ChangeBackground();
@@ -142,12 +149,14 @@ void Calendar::Update()
 		currentMonth -= (currentMonth==1) ? 0 : 1;
 		TilesInit();
 		LoadFromFile(currentMonth);
+		focusCoor = { -1, -1 };
 		moveMonth = 0;
 	}
 	else if (moveMonth == 1) {
 		currentMonth += (currentMonth == 12) ? 0 : 1;
 		TilesInit();
 		LoadFromFile(currentMonth);
+		focusCoor = { -1, -1 };
 		moveMonth = 0;
 	}
 }

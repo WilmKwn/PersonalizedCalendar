@@ -18,7 +18,8 @@ public:
 
 	void ClearScreen(float r, float g, float b);
 	void DrawLine(std::pair<int,int> p1, std::pair<int, int> p2, D2D1_COLOR_F color);
-	void DrawRect(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COLOR_F color);
+	void DrawOutlineRect(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COLOR_F color);
+	void DrawFilledRect(std::pair<int, int> p1, std::pair<int, int> p2, D2D1_COLOR_F color);
 	void WriteText(std::string text, int x, int y, int w, int h, D2D1_COLOR_F color);
 
 private:

@@ -46,6 +46,7 @@ private:
 	D2D1_COLOR_F dayOfWeekColor;
 	D2D1_COLOR_F lineColor;
 
+	int originalMonth;
 	int currentMonth;
 	int currentDay;
 
@@ -55,6 +56,8 @@ private:
 
 	Tile *tiles[5][7];
 	Tile *daysOfWeek[7];
+
+	std::pair<int, int> todayIndex;
 
 	static std::pair<int, int> focusCoor;
 	static std::string text;
