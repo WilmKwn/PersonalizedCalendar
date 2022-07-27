@@ -19,6 +19,7 @@ Calendar::Calendar(Graphics *graphics, std::pair<int, int> dimensions, HWND wind
 	focusColor = D2D1::ColorF(0.2f, 0.2f, 0.2f);
 	dateColor = D2D1::ColorF(0.9f, 0.9f, 0.9f);
 	dayOfWeekColor = D2D1::ColorF(1.0f, 0.7f, 0.0f);
+	crossedColor = D2D1::ColorF(1.0f, 0.0f, 0.0f, 0.75f);
 
 	GetModuleFileName(NULL, path, sizeof(path));
 	basePath = path;
@@ -105,6 +106,11 @@ void Calendar::Update()
 		for (int j = 0; j < ARRAYSIZE(tiles[0]); j++) {
 			graphics->DrawLine({ j*w, i*h + space }, { j*w, (i+1)*h + space }, lineColor);
 			graphics->DrawLine({ j*w, i*h + space }, { (j+1)*w, i*h + space }, lineColor);
+
+			if (tiles[i][j]->GetDay() < currentDay && tiles[i][j]->GetDay() != 0 && currentMonth == originalMonth) {
+				graphics->DrawLine({ j*w, i*h + space }, { (j+1)*w, (i + 1)*h + space }, crossedColor);
+				graphics->DrawLine({ j*w, (i+1)*h + space }, { (j + 1)*w, i*h + space }, crossedColor);
+			}
 
 			int x = tiles[i][j]->GetPos().first;
 			int y = tiles[i][j]->GetPos().second;

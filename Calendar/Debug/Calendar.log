@@ -1,4 +1,4 @@
 ﻿  Calendar.cpp
-c:\users\willi\source\repos\calendar\calendar\calendar.cpp(112): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\willi\source\repos\calendar\calendar\calendar.cpp(249): warning C4018: '<': signed/unsigned mismatch
+c:\users\willi\source\repos\calendar\calendar\calendar.cpp(117): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\willi\source\repos\calendar\calendar\calendar.cpp(254): warning C4018: '<': signed/unsigned mismatch
   Calendar.vcxproj -> C:\Users\willi\source\repos\Calendar\Debug\Calendar.exe

@@ -1,4 +1,4 @@
-0|
+0|Packback 1Q - 2RGS120 - Calculate GPA
 1|
 2|
 3|
@@ -9,18 +9,18 @@
 8|
 9|
 10|
-11|End of Early Start
-12|
+11|
+12|End of Early Start
 13|
 14|
-15|
-16|
+15|2:00 - Move in to dorms
+16|BGR Begin
 17|
 18|
 19|
-20|
+20|BGR End
 21|
-22|
+22|Fall Semester Starts
 23|
 24|
 25|

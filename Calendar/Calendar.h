@@ -45,6 +45,7 @@ private:
 	D2D1_COLOR_F focusColor;
 	D2D1_COLOR_F dayOfWeekColor;
 	D2D1_COLOR_F lineColor;
+	D2D1_COLOR_F crossedColor;
 
 	int originalMonth;
 	int currentMonth;
